@@ -2,110 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Number Extractor Tool</title>
+  <title>Global Number Extractor</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
       text-align: center;
       padding: 20px;
+      background: url('https://images.unsplash.com/photo-1525182008055-f88b95ff7980') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
     }
     .container {
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.7);
       border-radius: 15px;
       padding: 20px;
       max-width: 700px;
       margin: auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
     textarea {
-      width: 90%;
-      height: 150px;
+      width: 100%;
+      height: 200px;
       border-radius: 10px;
-      border: none;
       padding: 10px;
-      margin-top: 10px;
-      font-size: 14px;
+      margin-bottom: 10px;
     }
     button {
-      background: #28a745;
-      border: none;
       padding: 10px 20px;
-      margin: 10px;
-      border-radius: 8px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      background: #4CAF50;
+      color: white;
       font-size: 16px;
       cursor: pointer;
-      color: white;
+      transition: 0.3s;
     }
     button:hover {
-      background: #218838;
+      background: #45a049;
     }
-    .result {
-      margin-top: 20px;
-      padding: 10px;
+    #result {
+      margin-top: 15px;
+      padding: 15px;
       background: white;
       color: black;
       border-radius: 10px;
+      white-space: pre-wrap;
       text-align: left;
-      max-height: 300px;
-      overflow-y: auto;
+      min-height: 100px;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ddd;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📱 Number Extractor</h1>
-    <p>This tool is developed by <b>Umar Mughal</b></p>
-    <textarea id="inputText" placeholder="Paste your numbers here..."></textarea><br>
+    <h1>Global Number Extractor</h1>
+    <textarea id="inputText" placeholder="Paste your text with phone numbers here..."></textarea>
+    <br>
     <button onclick="extractNumbers(true)">Extract With Country Code</button>
     <button onclick="extractNumbers(false)">Extract Without Country Code</button>
-    <div id="output" class="result"></div>
-    <button onclick="copyNumbers()">📋 Copy Numbers</button>
+    <div id="result"></div>
+    <button onclick="copyNumbers()">Copy Extracted Numbers</button>
+    <footer>
+      Developed by Umar Mughal
+    </footer>
   </div>
-
-  <!-- Load codes list -->
   <script src="codes.js"></script>
-  <script>
-    function extractNumbers(withCode) {
-      let text = document.getElementById("inputText").value;
-      let matches = text.match(/\+\d{6,15}/g); // match + and 6–15 digits
-      let output = "";
-
-      if (matches) {
-        let numbers = matches.slice(0, 500); // max 500
-        numbers.forEach(num => {
-          let withoutCode = num;
-          let removedCode = "";
-
-          // check against known codes
-          for (let code of countryCodes.sort((a, b) => b.length - a.length)) {
-            if (num.startsWith("+" + code)) {
-              withoutCode = num.replace("+" + code, "");
-              removedCode = "+" + code;
-              break;
-            }
-          }
-
-          if (withCode) {
-            output += num + "<br>";
-          } else {
-            output += withoutCode + (removedCode ? " (removed " + removedCode + ")" : "") + "<br>";
-          }
-        });
-        document.getElementById("output").innerHTML = output;
-      } else {
-        document.getElementById("output").innerHTML = "⚠️ No valid numbers found.";
-      }
-    }
-
-    function copyNumbers() {
-      let text = document.getElementById("output").innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("✅ Numbers copied to clipboard!");
-      });
-    }
-  </script>
 </body>
 </html>
