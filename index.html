@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Extractor Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+    textarea {
+      width: 90%;
+      height: 150px;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    button {
+      background: #28a745;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+    }
+    button:hover {
+      background: #218838;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      color: black;
+      border-radius: 10px;
+      text-align: left;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 Number Extractor</h1>
+    <p>This tool is developed by <b>Umar Mughal</b></p>
+    <textarea id="inputText" placeholder="Paste your numbers here..."></textarea><br>
+    <button onclick="extractNumbers(true)">Extract With Country Code</button>
+    <button onclick="extractNumbers(false)">Extract Without Country Code</button>
+    <div id="output" class="result"></div>
+    <button onclick="copyNumbers()">📋 Copy Numbers</button>
+  </div>
+
+  <!-- Load codes list -->
+  <script src="codes.js"></script>
+  <script>
+    function extractNumbers(withCode) {
+      let text = document.getElementById("inputText").value;
+      let matches = text.match(/\+\d{6,15}/g); // match + and 6–15 digits
+      let output = "";
+
+      if (matches) {
+        let numbers = matches.slice(0, 500); // max 500
+        numbers.forEach(num => {
+          let withoutCode = num;
+          let removedCode = "";
+
+          // check against known codes
+          for (let code of countryCodes.sort((a, b) => b.length - a.length)) {
+            if (num.startsWith("+" + code)) {
+              withoutCode = num.replace("+" + code, "");
+              removedCode = "+" + code;
+              break;
+            }
+          }
+
+          if (withCode) {
+            output += num + "<br>";
+          } else {
+            output += withoutCode + (removedCode ? " (removed " + removedCode + ")" : "") + "<br>";
+          }
+        });
+        document.getElementById("output").innerHTML = output;
+      } else {
+        document.getElementById("output").innerHTML = "⚠️ No valid numbers found.";
+      }
+    }
+
+    function copyNumbers() {
+      let text = document.getElementById("output").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("✅ Numbers copied to clipboard!");
+      });
+    }
+  </script>
+</body>
+</html>
